@@ -1,0 +1,35 @@
+.dragInput {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-radius: 6px;
+  background-color: var(--light-100);
+  font: var(--paragraph-sm);
+  transition: all 0.3s ease;
+  outline: 1px solid transparent;
+
+  &:hover {
+    background-color: var(--light-60);
+  }
+
+  &:focus {
+    outline: 1px solid var(--dark-100);
+  }
+
+  > input {
+    width: 100%;
+    border: none;
+    outline: none;
+    color: var(--dark-100);
+  }
+
+  .label {
+    display: inline-block;
+    padding: 8px;
+    color: var(--light-80);
+    cursor: ew-resize;
+    user-select: none;
+  }
+}

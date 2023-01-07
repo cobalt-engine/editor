@@ -1,0 +1,38 @@
+.controls {
+  align-items: center;
+  display: flex;
+  height: calc(24px + 12px * 2);
+  position: absolute;
+  left: 12px;
+  width: 300px;
+  top: 12px;
+  border-radius: 6px;
+  background-color: var(--dark-60);
+  user-select: none;
+  padding-inline: 12px;
+  display: flex;
+
+  > button {
+    height: 24px;
+    width: 24px;
+    background-color: transparent;
+
+    &:not(:first-child) {
+      margin-left: 12px;
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      color: var(--light-80);
+      transition: all 0.3s ease;
+    }
+
+    &:hover,
+    &.active {
+      svg {
+        color: var(--light-100);
+      }
+    }
+  }
+}

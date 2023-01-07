@@ -1,0 +1,17 @@
+.heading {
+  &.small {
+    font: var(--heading-sm);
+  }
+
+  &.medium {
+    font: var(--heading-md);
+  }
+
+  &.dark {
+    color: var(--dark-100);
+  }
+
+  &.light {
+    color: var(--light-100);
+  }
+}

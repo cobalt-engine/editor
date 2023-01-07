@@ -1,0 +1,19 @@
+.paragraph {
+  text-align: left;
+
+  &.small {
+    font: var(--paragraph-sm);
+  }
+
+  &.medium {
+    font: var(--paragraph-md);
+  }
+
+  &.dark {
+    color: var(--dark-100);
+  }
+
+  &.light {
+    color: var(--light-100);
+  }
+}

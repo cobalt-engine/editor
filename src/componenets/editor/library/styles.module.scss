@@ -1,0 +1,37 @@
+.library {
+  opacity: 0;
+  transform: translateY(calc(100% + 12px));
+  position: absolute;
+  height: 400px;
+  left: calc(12px + 300px + 12px);
+  right: calc(12px + 300px + 12px);
+  bottom: 12px;
+  border-radius: 6px;
+  background-color: var(--dark-60);
+  user-select: none;
+  padding-block: 12px;
+  padding-inline: 8px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+
+  &.noInspector {
+    right: 12px;
+  }
+
+  &.noHierarchy {
+    left: 12px;
+  }
+
+  &.open {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+}

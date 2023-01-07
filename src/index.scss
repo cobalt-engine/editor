@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Ubuntu+Mono&display=swap");
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  font-family: Roboto;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+input {
+  background-color: transparent;
+}
+
+:root {
+  --paragraph-sm: 400 12px/1 "Roboto", sans-serif;
+  --paragraph-md: 400 16px/1 "Roboto", sans-serif;
+  --heading-sm: 400 18px/1 "Ubuntu Mono", sans-serif;
+  --heading-md: 400 21px/1 "Ubuntu Mono", sans-serif;
+  --dark-100: #21252b;
+  --dark-80: #282c34;
+  --dark-60: #333842;
+  --light-100: #d7dae0;
+  --light-80: #757982;
+  --light-60: #d0d3d9;
+  --gray-100: #33373b;
+
+  --contexify-zIndex: 666;
+  --contexify-menu-minWidth: 220px;
+  --contexify-menu-padding: 2px;
+  --contexify-menu-radius: 6px;
+  --contexify-menu-bgColor: #fff;
+  --contexify-menu-shadow: 1px 2px 2px rgba(0, 0, 0, 0.1),
+    2px 4px 4px rgba(0, 0, 0, 0.1), 3px 6px 6px rgba(0, 0, 0, 0.1);
+  --contexify-menu-negatePadding: var(--contexify-menu-padding);
+  --contexify-menu-bgColor: var(--dark-60);
+  --contexify-separator-color: #4c4c4c;
+  --contexify-item-color: var(--light-100);
+  --contexify-activeItem-color: #fff;
+  --contexify-activeItem-bgColor: var(--dark-80);
+  --contexify-rightSlot-color: #6f6e77;
+  --contexify-activeRightSlot-color: #fff;
+  --contexify-arrow-color: #6f6e77;
+  --contexify-activeArrow-color: #fff;
+}
+
+.contexify {
+  font: var(--paragraph-sm) !important;
+}

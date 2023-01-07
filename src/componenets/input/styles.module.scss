@@ -1,0 +1,18 @@
+.input {
+  color: var(--dark-100);
+  padding-inline: 8px;
+  height: 36px;
+  border-radius: 6px;
+  background-color: var(--light-100);
+  font: var(--paragraph-sm);
+  transition: all 0.3s ease;
+  outline: 1px solid transparent;
+
+  &:hover {
+    background-color: var(--light-60);
+  }
+
+  &:focus {
+    outline: 1px solid var(--dark-100);
+  }
+}

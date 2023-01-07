@@ -1,0 +1,23 @@
+.menu {
+  height: 30px;
+  background-color: var(--dark-100);
+  align-items: center;
+  display: flex;
+  padding-inline: 12px;
+  flex-shrink: 0;
+
+  button {
+    height: 20px;
+    transition: all 0.3s ease;
+    padding-inline: 6px;
+    border-radius: 4px;
+
+    &:not(:first-child) {
+      margin-left: 8px;
+    }
+
+    &:hover {
+      background-color: var(--gray-100);
+    }
+  }
+}
