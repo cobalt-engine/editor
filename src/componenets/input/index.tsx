@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 import classes from "./styles.module.scss";
 
 interface Props<T> {
+  style?: CSSProperties;
   placeholder?: string;
   value?: T;
   onChange?: (v: T) => void;
 }
 
 export function Input<T extends string | number>({
+  style,
   placeholder,
   value: externalValue,
   onChange,
@@ -22,6 +24,7 @@ export function Input<T extends string | number>({
 
   return (
     <input
+      style={style}
       placeholder={placeholder}
       className={classes.input}
       onChange={(e) => {

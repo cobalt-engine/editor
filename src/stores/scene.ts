@@ -1,11 +1,6 @@
-import {
-  RigidBodyAutoCollider,
-  RigidBodyTypeString,
-} from "@react-three/rapier";
 import create from "zustand";
 
-import { GameModel, GameObject } from "../primitives/gameobject";
-import { Q } from "../primitives/quaternion";
+import { GameObject } from "../primitives/gameobject";
 import { V3 } from "../primitives/vector3";
 
 export enum TransformationMode {
@@ -14,33 +9,120 @@ export enum TransformationMode {
   Scale,
 }
 
-type ComponentName = "physics" | "rendering";
+export type ComponentName =
+  | "physics"
+  | "rendering"
+  | "networking"
+  | "transform"
+  | "light"
+  | "camera"
+  | "fog";
 
 interface SceneStore {
-  objects: Array<GameObject>;
-  selectedObject: GameObject | null;
+  objects: GameObject[];
   setScene: (gameObjects: GameObject[]) => void;
   clearScene: () => void;
-  addObject: (gameObject: GameObject) => void;
-  removeObject: (gameObject: GameObject) => void;
-  selectObject: (gameObject: GameObject) => void;
-  moveObject: (gameObject: GameObject, to: V3) => void;
-  rotateObject: (gameObject: GameObject, to: Q) => void;
-  changeObjectName: (gameObject: GameObject, to: GameObject["name"]) => void;
-  changeObjectModel: (gameObject: GameObject, model: GameModel) => void;
+  selectedObject: null | GameObject;
+  selectObject: (selected: GameObject) => void;
   unselectObject: () => void;
-  transformationMode: TransformationMode;
-  setTransformationMode: (mode: TransformationMode) => void;
+  addObject: (newObject: GameObject) => void;
+  removeObject: (oldObject: GameObject) => void;
+
+  tick: number;
+  setTick: (v: number) => void;
+  increaseTick: () => void;
+
   enableComponent: (gameObject: GameObject, component: ComponentName) => void;
   disableComponent: (gameObject: GameObject, component: ComponentName) => void;
+
+  changeObjectName: (gameObject: GameObject, name: GameObject["name"]) => void;
+
+  changeObjectRenderingModel: (
+    gameObject: GameObject,
+    model: GameObject["rendering"]["model"]
+  ) => void;
+  changeObjectRenderingCastShadows: (
+    gameObject: GameObject,
+    v: GameObject["rendering"]["castShadows"]
+  ) => void;
+  changeObjectRenderingRecieveShadows: (
+    gameObject: GameObject,
+    v: GameObject["rendering"]["recieveShadows"]
+  ) => void;
+
   changeObjectRigidbodyType: (
     gameObject: GameObject,
-    type: RigidBodyTypeString
+    type: GameObject["physics"]["rigidbody"]["type"]
   ) => void;
   changeObjectColliderType: (
     gameObject: GameObject,
-    type: RigidBodyAutoCollider
+    type: GameObject["physics"]["collider"]["type"]
   ) => void;
+  changeObjectColliderSize: (gameObject: GameObject, sizes: V3) => void;
+
+  changeObjectCameraType: (
+    gameObject: GameObject,
+    type: GameObject["camera"]["type"]
+  ) => void;
+  changeObjectCameraFov: (
+    gameObject: GameObject,
+    fov: GameObject["camera"]["fov"]
+  ) => void;
+  changeObjectCameraDefault: (
+    gameObject: GameObject,
+    fov: GameObject["camera"]["isDefault"]
+  ) => void;
+
+  changeObjectLightType: (
+    gameObject: GameObject,
+    type: GameObject["light"]["type"]
+  ) => void;
+  changeObjectLightIntensity: (
+    gameObject: GameObject,
+    intensity: GameObject["light"]["intensity"]
+  ) => void;
+  changeObjectLightColor: (
+    gameObject: GameObject,
+    color: GameObject["light"]["color"]
+  ) => void;
+  changeObjectLightCastShadows: (
+    gameObject: GameObject,
+    castShadows: GameObject["light"]["castShadows"]
+  ) => void;
+
+  changeObjectPostprocessingDofFocusDistance: (
+    gameObject: GameObject,
+    castShadows: GameObject["postprocessing"]["dof"]["focusDistance"]
+  ) => void;
+
+  changeObjectFogNear: (
+    gameObject: GameObject,
+    near: GameObject["fog"]["near"]
+  ) => void;
+  changeObjectFogFar: (
+    gameObject: GameObject,
+    far: GameObject["fog"]["far"]
+  ) => void;
+  changeObjectFogColor: (
+    gameObject: GameObject,
+    color: GameObject["fog"]["color"]
+  ) => void;
+
+  moveObject: (
+    gameObject: GameObject,
+    position: GameObject["transform"]["position"]
+  ) => void;
+  scaleObject: (
+    gameObject: GameObject,
+    scale: GameObject["transform"]["scale"]
+  ) => void;
+  rotateObject: (
+    gameObject: GameObject,
+    rotation: GameObject["transform"]["rotation"]
+  ) => void;
+
+  transformationMode: TransformationMode;
+  setTransformationMode: (mode: TransformationMode) => void;
 }
 
 const changeObject = (gameObject: GameObject, props: Partial<GameObject>) => {
@@ -56,39 +138,11 @@ const changeObject = (gameObject: GameObject, props: Partial<GameObject>) => {
 
 export const useSceneStore = create<SceneStore>((set) => ({
   objects: [],
-  selectedObject: null,
   setScene: (gameObjects) => set({ objects: gameObjects }),
   clearScene: () => set({ objects: [], selectedObject: null }),
+  selectedObject: null,
   selectObject: (selected) => set({ selectedObject: selected }),
   unselectObject: () => set({ selectedObject: null }),
-  changeObjectName: (gameObject, name) => changeObject(gameObject, { name }),
-  enableComponent: (gameObject, component) =>
-    changeObject(gameObject, {
-      [component]: { ...gameObject[component], enabled: true },
-    }),
-  disableComponent: (gameObject, component) =>
-    changeObject(gameObject, {
-      [component]: { ...gameObject[component], enabled: false },
-    }),
-  changeObjectModel: (gameObject, model) =>
-    changeObject(gameObject, { rendering: { ...gameObject.rendering, model } }),
-  changeObjectRigidbodyType: (gameObject, type) =>
-    changeObject(gameObject, {
-      physics: {
-        ...gameObject.physics,
-        rigidbody: { type },
-      },
-    }),
-  changeObjectColliderType: (gameObject, type) =>
-    changeObject(gameObject, {
-      physics: {
-        ...gameObject.physics,
-        collider: { ...gameObject.physics.collider, type },
-      },
-    }),
-  moveObject: (gameObject, position) => changeObject(gameObject, { position }),
-  rotateObject: (gameObject, rotation) =>
-    changeObject(gameObject, { rotation }),
   addObject: (newObject) =>
     set((old) => ({ objects: [...old.objects, newObject] })),
   removeObject: (oldObject) =>
@@ -99,7 +153,102 @@ export const useSceneStore = create<SceneStore>((set) => ({
       if (old.selectedObject?.id === oldObject.id) old.unselectObject();
       return { objects: copy };
     }),
+
+  tick: 0,
+  setTick: (v) => set({ tick: v }),
+  increaseTick: () => set((old) => ({ tick: old.tick + 1 })),
+
+  enableComponent: (gameObject, component) =>
+    changeObject(gameObject, {
+      [component]: { ...gameObject[component], enabled: true },
+    }),
+  disableComponent: (gameObject, component) =>
+    changeObject(gameObject, {
+      [component]: { ...gameObject[component], enabled: false },
+    }),
+
+  changeObjectName: (gameObject, name) => changeObject(gameObject, { name }),
+
+  changeObjectRenderingModel: (gameObject, model) =>
+    changeObject(gameObject, { rendering: { ...gameObject.rendering, model } }),
+  changeObjectRenderingCastShadows: (gameObject, castShadows) =>
+    changeObject(gameObject, {
+      rendering: { ...gameObject.rendering, castShadows },
+    }),
+  changeObjectRenderingRecieveShadows: (gameObject, recieveShadows) =>
+    changeObject(gameObject, {
+      rendering: { ...gameObject.rendering, recieveShadows },
+    }),
+
+  changeObjectRigidbodyType: (gameObject, type) =>
+    changeObject(gameObject, {
+      physics: {
+        ...gameObject.physics,
+        rigidbody: {
+          ...gameObject.physics.rigidbody,
+          type,
+        },
+      },
+    }),
+  changeObjectColliderType: (gameObject, type) =>
+    changeObject(gameObject, {
+      physics: {
+        ...gameObject.physics,
+        collider: { ...gameObject.physics.collider, type },
+      },
+    }),
+  changeObjectColliderSize: (gameObject, sizes) =>
+    changeObject(gameObject, {
+      physics: {
+        ...gameObject.physics,
+        collider: { ...gameObject.physics.collider, sizes },
+      },
+    }),
+
+  changeObjectCameraType: (gameObject, type) =>
+    changeObject(gameObject, { camera: { ...gameObject.camera, type } }),
+  changeObjectCameraFov: (gameObject, fov) =>
+    changeObject(gameObject, { camera: { ...gameObject.camera, fov } }),
+  changeObjectCameraDefault: (gameObject, isDefault) =>
+    changeObject(gameObject, { camera: { ...gameObject.camera, isDefault } }),
+
+  changeObjectLightType: (gameObject, type) =>
+    changeObject(gameObject, { light: { ...gameObject.light, type } }),
+  changeObjectLightIntensity: (gameObject, intensity) =>
+    changeObject(gameObject, { light: { ...gameObject.light, intensity } }),
+  changeObjectLightColor: (gameObject, color) =>
+    changeObject(gameObject, { light: { ...gameObject.light, color } }),
+  changeObjectLightCastShadows: (gameObject, castShadows) =>
+    changeObject(gameObject, { light: { ...gameObject.light, castShadows } }),
+
+  changeObjectFogNear: (gameObject, near) =>
+    changeObject(gameObject, { fog: { ...gameObject.fog, near } }),
+  changeObjectFogFar: (gameObject, far) =>
+    changeObject(gameObject, { fog: { ...gameObject.fog, far } }),
+  changeObjectFogColor: (gameObject, color) =>
+    changeObject(gameObject, { fog: { ...gameObject.fog, color } }),
+
+  changeObjectPostprocessingDofFocusDistance: (gameObject, focusDistance) =>
+    changeObject(gameObject, {
+      postprocessing: {
+        ...gameObject.postprocessing,
+        dof: { ...gameObject.postprocessing.dof, focusDistance },
+      },
+    }),
+
+  moveObject: (gameObject, position) =>
+    changeObject(gameObject, {
+      transform: { ...gameObject.transform, position },
+    }),
+  scaleObject: (gameObject, scale) =>
+    changeObject(gameObject, {
+      transform: { ...gameObject.transform, scale },
+    }),
+  rotateObject: (gameObject, rotation) =>
+    changeObject(gameObject, {
+      transform: { ...gameObject.transform, rotation },
+    }),
+
   transformationMode: TransformationMode.Translate,
-  setTransformationMode: (mode: TransformationMode) =>
-    set({ transformationMode: mode }),
+  setTransformationMode: (mode) => set({ transformationMode: mode }),
 }));

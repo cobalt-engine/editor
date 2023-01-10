@@ -39,7 +39,7 @@ input {
   --light-60: #d0d3d9;
   --gray-100: #33373b;
 
-  --contexify-zIndex: 666;
+  --contexify-zIndex: 1000;
   --contexify-menu-minWidth: 220px;
   --contexify-menu-padding: 2px;
   --contexify-menu-radius: 6px;
@@ -60,4 +60,11 @@ input {
 
 .contexify {
   font: var(--paragraph-sm) !important;
+
+  &_rightSlot svg {
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    height: 10px;
+  }
 }

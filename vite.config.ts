@@ -13,6 +13,7 @@ export default defineConfig({
     host: "localhost",
     port: 3000,
   },
+  assetsInclude: ["**/*.glb"],
   plugins: [swcReactRefresh(), svgr(), eslintPlugin()],
   esbuild: { jsx: "automatic" },
   css: {

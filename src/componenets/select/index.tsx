@@ -52,6 +52,7 @@ export function Select<T extends { label: string; value: unknown }>({
         control: (base) => ({
           ...base,
           ...style,
+          cursor: "pointer",
           minHeight: HEIGHT,
           maxHeight: HEIGHT,
           borderColor: "transparent",

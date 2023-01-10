@@ -1,4 +1,10 @@
-import { MouseEventHandler, useCallback, useEffect, useState } from "react";
+import {
+  CSSProperties,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import { Paragraph } from "../typography/paragraph";
 import classes from "./styles.module.scss";
@@ -7,11 +13,19 @@ interface Props {
   label: string;
   value?: number;
   onChange?: (value: number) => void;
+  fullLabel?: boolean;
+  style?: CSSProperties;
 }
 
 // An numeric input element which has a label which can be dragged to change
 // the value.
-export function DragInput({ value: externalValue, onChange, label }: Props) {
+export function DragInput({
+  fullLabel,
+  value: externalValue,
+  onChange,
+  label,
+  style,
+}: Props) {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
@@ -19,8 +33,13 @@ export function DragInput({ value: externalValue, onChange, label }: Props) {
   }, [externalValue]);
 
   return (
-    <div className={classes.dragInput}>
+    <div
+      style={style}
+      title={label.length > 1 ? label : undefined}
+      className={classes.dragInput}
+    >
       <DragLabel
+        fullLabel={fullLabel}
         value={value}
         setValue={(v: number) => {
           setValue(v);
@@ -32,7 +51,7 @@ export function DragInput({ value: externalValue, onChange, label }: Props) {
       <input
         value={value.toFixed(2)}
         onChange={(ev) => {
-          const v = parseInt(ev.target.value, 10);
+          const v = parseFloat(ev.target.value);
           setValue(v);
           if (onChange) onChange(v);
         }}
@@ -41,7 +60,17 @@ export function DragInput({ value: externalValue, onChange, label }: Props) {
   );
 }
 
-function DragLabel({ value, setValue, children }: any) {
+function DragLabel({
+  value,
+  setValue,
+  children,
+  fullLabel = false,
+}: {
+  value: number;
+  setValue: any;
+  children: string;
+  fullLabel?: boolean;
+}) {
   // We are creating a snapshot of the values when the drag starts
   // because the [value] will itself change & we need the original
   // [value] to calculate during a drag.
@@ -87,7 +116,7 @@ function DragLabel({ value, setValue, children }: any) {
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <Paragraph color="custom" onMouseDown={onStart} className={classes.label}>
-      {children}
+      {fullLabel ? children : children[0]}
     </Paragraph>
   );
 }
