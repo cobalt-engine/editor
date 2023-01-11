@@ -197,6 +197,13 @@ const BasicBody = ({
             />
           )}
           {gameObject.light.type === "directional" && (
+            <directionalLight
+              intensity={gameObject.light.intensity}
+              color={gameObject.light.color}
+              castShadow={gameObject.light.castShadows}
+            />
+          )}
+          {gameObject.light.type === "ambient" && (
             <>
               {is3dIconsVisible && !isInPlayMode && (
                 <group scale={5}>
@@ -207,7 +214,7 @@ const BasicBody = ({
                   />
                 </group>
               )}
-              <directionalLight
+              <ambientLight
                 intensity={gameObject.light.intensity}
                 color={gameObject.light.color}
                 castShadow={gameObject.light.castShadows}

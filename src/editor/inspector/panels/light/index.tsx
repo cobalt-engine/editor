@@ -27,6 +27,7 @@ export const LightPanel = () => {
       { label: "Прожектор", value: "spot" as const },
       { label: "Направленный", value: "directional" as const },
       { label: "В области", value: "area" as const },
+      { label: "Окружение", value: "ambient" as const },
     ],
     []
   );

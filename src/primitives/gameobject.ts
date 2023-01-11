@@ -91,7 +91,7 @@ interface TransformSettings extends ExtendableModule {
 }
 
 interface LightSettings extends ExtendableModule {
-  type: "spot" | "point" | "directional" | "area";
+  type: "spot" | "point" | "directional" | "area" | "ambient";
   intensity: number;
   color: string;
   castShadows: boolean;

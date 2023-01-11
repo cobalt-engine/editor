@@ -31,7 +31,7 @@ export const createDummyCamera = () => {
 export const createDummyLight = () => {
   const newGO = makeDummyGameObject();
   newGO.light.enabled = true;
-  newGO.light.type = "directional";
+  newGO.light.type = "ambient";
   newGO.name = "Источник света";
   const withBaseName = useSceneStore
     .getState()
